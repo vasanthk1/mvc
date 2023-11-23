@@ -1,4 +1,7 @@
 <?php
+namespace Controllers;
+use Core\Controller as Controller;
+
 class HomeController extends Controller {
     public function index() {
         // Database connection example
@@ -11,6 +14,6 @@ class HomeController extends Controller {
         // Use $this->config as needed for database connection or other configurations
         
         // Load the view
-        require_once '../app/views/index.php';
+        $this->loadView('index');
     }
 }

@@ -1,4 +1,6 @@
 <?php
+require_once 'vendor/autoload.php';
+
 class Router {
     protected $config;
 
@@ -21,7 +23,9 @@ class Router {
         $segments = array_diff($segments, $baseSegments);
 
         // Extract controller, method, and parameters
-        $controllerName = ucfirst(array_shift($segments)) . 'Controller';
+        // $controllerName = ucfirst(array_shift($segments)) . 'Controller';
+        $controllerName = 'Controllers\\' . ucfirst(array_shift($segments)) . 'Controller';
+
         $methodName = array_shift($segments);
 
         // If no controller or method specified, default to HomeController@index
@@ -29,19 +33,27 @@ class Router {
             $controllerName = 'HomeController';
             $methodName = 'index';
         }
+
+        if (empty($methodName)) {
+            $methodName = 'index';
+        }
         
         // Include the controller file
-        require_once 'app/controllers/' . $controllerName . '.php';
-
+        // require_once 'app/controllers/' . $controllerName . '.php';
+        // echo $controllerName;die();
         // Create an instance of the controller
         $controller = new $controllerName();
+        
+        // Instantiate the controller with the configuration
+        // $controller = new HomeController();
+
 
         // If the controller extends the base Controller, pass the config
         if ($controller instanceof Controller) {
             $controller->setConfig($this->config);
         }
-
+        
         // Call the method with parameters
-        call_user_func_array([$controller, $methodName], $params);
+        call_user_func_array([$controller, $methodName], $segments);
     }
 }
